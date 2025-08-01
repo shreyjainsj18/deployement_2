@@ -1,0 +1,56 @@
+name: CI + CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}/mlapptest
+  TAG: ${{ github.sha }}
+
+jobs:
+  pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      # -- checkout --------------------------------------------------------
+      - uses: actions/checkout@v4
+
+      # -- python env ------------------------------------------------------
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dev deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt pytest flake8 bandit
+
+      # -- quality gates ---------------------------------------------------
+      - name: Lint
+        run: flake8 .
+      - name: Security scan
+        run: bandit -r app
+      - name: Unit tests
+        run: pytest -q
+
+      # -- build & push image to GHCR -------------------------------------
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GHCR_TOKEN }}
+
+      - name: Build & push image
+        run: |
+          docker build -t $REGISTRY/$IMAGE_NAME:$TAG .
+          docker push $REGISTRY/$IMAGE_NAME:$TAG
+
+      # -- Render deploy ---------------------------------------------------
+      - name: Trigger Render deploy
+        if: success()
+        run: |
+          curl -fsSL -X POST "${{ secrets.RENDER_DEPLOY_HOOK }}&imgUrl=$REGISTRY/$IMAGE_NAME:$TAG"
