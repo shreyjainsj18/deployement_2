@@ -35,6 +35,10 @@ jobs:
         run: flake8 .
       - name: Security scan
         run: bandit -r . || true
+      - name: Run Tests with Pytest
+        env:
+        OPENAI_API_KEY: "fake-key-for-ci"
+        run: pytest -q
       - name: Unit tests
         run: pytest -q
 
