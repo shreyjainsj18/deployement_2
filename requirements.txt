@@ -4,3 +4,4 @@ openai==1.34.0
 pytest
 httpx<0.27
 python-dotenv
+black

@@ -4,9 +4,7 @@ from unittest.mock import patch, MagicMock
 
 def fake_completion(*_, **__):
     fake = MagicMock()
-    fake.choices = [
-        MagicMock(message=MagicMock(content="Hi, I am a bot"))
-    ]
+    fake.choices = [MagicMock(message=MagicMock(content="Hi, I am a bot"))]
     return fake
 
 

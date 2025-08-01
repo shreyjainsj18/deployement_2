@@ -29,6 +29,8 @@ jobs:
           pip install -r requirements.txt pytest flake8 bandit
 
       # -- quality gates ---------------------------------------------------
+      - name: Autoformat
+        run: black 
       - name: Lint
         run: flake8 .
       - name: Security scan
