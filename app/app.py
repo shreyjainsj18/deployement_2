@@ -32,6 +32,6 @@ def chat():
     return jsonify({"AI CHAT REPLY": response.choices[0].message.content.strip()}), 200
 
 if __name__ == "__main__":
-    debug_mode = os.getenv("FLASK_ENV") == "development"
+    # debug_mode = os.getenv("FLASK_ENV") == "development"
     app.run(host="0.0.0.0", port=5000, debug=debug_mode)
 
