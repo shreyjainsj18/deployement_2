@@ -30,7 +30,7 @@ jobs:
 
       # -- quality gates ---------------------------------------------------
       - name: Autoformat
-        run: black 
+        run: black .
       - name: Lint
         run: flake8 .
       - name: Security scan
