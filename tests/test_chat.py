@@ -13,4 +13,4 @@ def test_chat_endpoint(_mock):
     c = app.test_client()
     r = c.post("/chat", json={"question": "Hello?"})
     assert r.status_code == 200
-    assert r.get_json()["AI CHAT REPLY"] == "Hi, I am a bot"
+    assert r.get_json()["AI CHAT REPLY"] == "Hi, I am a robot"
